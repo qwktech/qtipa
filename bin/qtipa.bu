@@ -1,0 +1,48 @@
+variant: fcos
+version: 1.5.0
+storage:
+  files:
+    - path: /etc/hostname
+      overwrite: true
+      mode: 0644
+      contents:
+        inline: qtipa1.qwktech.local
+    - path: /etc/hosts
+      overwrite: true
+      mode: 0644
+      contents:
+        inline: |
+          127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+          ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+          192.168.4.7 qtipa1.qwktech.local qwktech
+  links:
+    - path: /etc/localtime
+      target: ../usr/share/zoneinfo/America/Denver
+passwd:
+  users:
+    - name: t0-user
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOKFXvM/5T9zKQl6VQ+s6PGeU4wTOIfaQJ39Rpxv3oh5 qwktech
+systemd:
+  units:
+    - name: rpm-ostree-install-freeipa.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Layer freeipa with rpm-ostree.
+        Wants=network-online.target
+        After=network-online.target
+        Before=zincati.service
+        ConditionPathExists=!/var/lib/%N.stamp
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/usr/bin/rpm-ostree install -y --allow-inactive freeipa-server
+        ExecStart=/bin/touch /var/lib/%N.stamp
+
+        [Install]
+        WantedBy=multi-user.target
+    - name: rpm-ostree-countme.timer
+      enabled: false
+      mask: true
