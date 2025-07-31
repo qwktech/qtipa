@@ -13,7 +13,7 @@ install:
 	sudo echo "${HOSTIP}    ${HOSTHOSTNAME}" > /etc/hosts
 	sudo echo "$${CONTAINERIP}    ${CONTAINERHOSTNAME}" >> /etc/hosts
 	sudo podman run -it --read-only \
-	  -n qtipa1-installer \
+	  --name qtipa1-installer \
 	  -h ${CONTAINERHOSTNAME} \
 	  -ip ${CONTAINERIP} \
 	  -v ${DATADIR}:/data:Z \
