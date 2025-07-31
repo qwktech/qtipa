@@ -1,0 +1,14 @@
+[Unit]
+Description=FreeIPA Server Container
+After=network.target
+
+[Container]
+Name = "qtipa1-container"
+Hostname = "qtipa1-container.qwktech.local"
+Ip = "10.102.100.7"
+Read-Only = true
+Volume = ["/srv/qtipa/data:/data:Z"]
+Image = "quay.io/freeipa/freeipa-server:rocky-9"
+
+[Install]
+WantedBy=multi-user.target

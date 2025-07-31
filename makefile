@@ -1,29 +1,10 @@
-FCOSDISK=/dev/sdb
+install:
+	podman run -it --read-only \
+	  -n qtipa1-container \
+	  -h qtipa1-container.qwktech.local \
+	  -ip 10.102.100.7 \
+	  -v /srv/qtipa/data:/data:Z \
+	  quay.io/freeipa/freeipa-server:rocky-9 \
+	  ipa-server-install -r QWKTECH.LOCAL --no-ntp
 
-STREAM=stable
-TEMP=/tmp/Rpi5boot
-
-.PHONY: build clean install
-
-build:
-	podman run --rm -it \
-	  --security-opt label=disable \
-	  -v ${PWD}/build:${TEMP}:Z \
-	  -v ${PWD}/bin:/data:Z \
-	  quay.io/fedora/fedora:40 \
-	  /data/build-deps.sh
-
-clean:
-	rm -r build/*
-
-install: build
-	sudo podman run --rm -it \
-	  --pull=always \
-	  --privileged \
-	  -v /dev:/dev \
-	  -v /run/udev:/run/udev \
-	  -v ${PWD}/bin:/data:Z \
-	  quay.io/coreos/coreos-installer:release \
-	  install ${FCOSDISK} -i /data/qtipa.ign
-	sudo ${PWD}/bin/install-bootloader.sh ${FCOSDISK}
 
