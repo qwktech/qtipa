@@ -1,16 +1,24 @@
 DATADIR=/srv/qtipa/data
-UNITPATH=
+UNITDIR=/etc/containers/systemd/
 IMAGE=quay.io/freeipa/freeipa-server:rocky-9
-IP=10.102.100.7
-HOSTNAME=qtipa1-container.qwktech.local
+
+HOSTIP=192.168.4.7
+HOSTHOSTNAME=qtipa1.qwktech.local
+
+CONTAINERIP=10.102.100.7
+CONTAINERHOSTNAME=qtipa1-container.qwktech.local
+
 
 install:
-	podman run -it --read-only \
+	sudo echo "${HOSTIP}    ${HOSTHOSTNAME}" > /etc/hosts
+	sudo echo "$${CONTAINERIP}    ${CONTAINERHOSTNAME}" >> /etc/hosts
+	sudo podman run -it --read-only \
 	  -n qtipa1-installer \
-	  -h ${HOSTNAME} \
-	  -ip ${IP} \
+	  -h ${CONTAINERHOSTNAME} \
+	  -ip ${CONTAINERIP} \
 	  -v ${DATADIR}:/data:Z \
 	  ${IMAGE} \
 	  ipa-server-install -r QWKTECH.LOCAL --no-ntp
-	ln -s quadlet/* ${UNITPATH}
-
+	sudo ln -s quadlet/* ${UNITDIR}
+	sudo systemctl daemon-reload
+	sudo systemctl enable --now freeipa.container
