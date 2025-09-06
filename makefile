@@ -12,7 +12,7 @@ CONTAINERHOSTNAME=qtipa1-container.qwktech.local
 install:
 	sudo echo "${HOSTIP}    ${HOSTHOSTNAME}" > /etc/hosts
 	sudo echo "$${CONTAINERIP}    ${CONTAINERHOSTNAME}" >> /etc/hosts
-	sudo podman run -it --read-only \
+	sudo podman run --rm -it --read-only \
 	  --name qtipa1-installer \
 	  -h ${CONTAINERHOSTNAME} \
 	  --ip ${CONTAINERIP} \
