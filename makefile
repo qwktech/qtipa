@@ -12,6 +12,7 @@ CONTAINERHOSTNAME=qtipa1-container.qwktech.local
 install:
 	sudo echo "${HOSTIP}    ${HOSTHOSTNAME}" > /etc/hosts
 	sudo echo "$${CONTAINERIP}    ${CONTAINERHOSTNAME}" >> /etc/hosts
+	sudo ln -s quadlet/* ${UNITDIR}
 	sudo systemctl daemon-reload
 	sudo systemctl enable --now qwktech.network
 	sudo podman run --rm -it --read-only \
@@ -22,6 +23,5 @@ install:
 	  -v ${DATADIR}:/data:Z \
 	  ${IMAGE} \
 	  ipa-server-install -r QWKTECH.LOCAL --no-ntp
-	sudo ln -s quadlet/* ${UNITDIR}
 	sudo systemctl daemon-reload
 	sudo systemctl enable --now freeipa.container
