@@ -1,0 +1,5 @@
+[Network]
+NetworkName=network-qwktech
+Subnet=10.102.100.0/24
+Gateway=10.102.100.1
+DNS=192.168.1.13
